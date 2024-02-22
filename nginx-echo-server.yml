@@ -64,7 +64,7 @@ spec:
   ports:
     - protocol: "TCP"
       port: 8000
-      targetPort: 80 #TODO: nginxとポートが被って良い理由を調査
+      targetPort: 80 # TODO: k8sのネットワークモデルを調査
 
 
 
