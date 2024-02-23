@@ -1,12 +1,5 @@
 ## 下記のコマンドで動作確認可能
 ## curl http://$(minikube ip):$(kubectl get service nginx-service -o=go-template='{{(index .spec.ports 0).nodePort}}')
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: nginx
-  labels:
-    name: nginx
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,11 +20,19 @@ spec:
           image: nginx:1.25.4
           ports:
           - containerPort: 80
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: config-volume
+          configMap:
+            name: nginx-conf
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: nginx-service
+  namespace: nginx
 spec:
   selector:
     app: nginx
@@ -77,7 +78,6 @@ metadata:
 spec:
   selector:
     app: echo-server
-  type: NodePort
   ports:
     - protocol: "TCP"
       port: 8000
